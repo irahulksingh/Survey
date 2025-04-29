@@ -45,7 +45,4 @@ app.post('/submit', (req, res) => {
 app.get('/results', (req, res) => {
   res.json(results);
 });
-app.get('/', (req, res) => {
-  res.send('Server is running! API is active.');
-});
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
