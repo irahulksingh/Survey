@@ -1,17 +1,75 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Enkätundersökning</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Survey App</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .question { margin-bottom: 20px; }
+    button { margin-top: 10px; }
+    #results { margin-top: 40px; }
+  </style>
 </head>
 <body>
-  <h1>Enkätundersökning</h1>
-  <form id="surveyForm"></form>
-  <button id="submitBtn">Skicka Svar</button>
-  <canvas id="resultChart" style="display:none;"></canvas>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js"></script>
+<h1>Survey</h1>
+
+<form id="surveyForm">
+  <div class="question">
+    <label>How satisfied are you?</label><br>
+    <input type="radio" name="q1" value="1"> Not satisfied<br>
+    <input type="radio" name="q1" value="2"> Okay<br>
+    <input type="radio" name="q1" value="3"> Very satisfied<br>
+  </div>
+
+  <div class="question">
+    <label>Would you recommend us?</label><br>
+    <input type="radio" name="q2" value="1"> No<br>
+    <input type="radio" name="q2" value="2"> Maybe<br>
+    <input type="radio" name="q2" value="3"> Yes<br>
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
+
+<div id="results">
+  <h2>Survey Results:</h2>
+  <pre id="resultsJson">Loading...</pre>
+</div>
+
+<script>
+const API_URL = 'https://survey-a.onrender.com/'; // <--- Paste your deployed URL here
+
+document.getElementById('surveyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const answers = {};
+
+  for (const [name, value] of formData.entries()) {
+    if (!answers[name]) answers[name] = {};
+    answers[name][value] = 1;
+  }
+
+  await fetch(API_URL + '/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(answers)
+  });
+
+  loadResults();
+});
+
+async function loadResults() {
+  const res = await fetch(API_URL + '/results');
+  const data = await res.json();
+  document.getElementById('resultsJson').textContent = JSON.stringify(data, null, 2);
+}
+
+// Load results when page loads
+loadResults();
+</script>
+
 </body>
 </html>
+
