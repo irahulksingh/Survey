@@ -11,7 +11,7 @@ const RESULTS_FILE = path.join(__dirname, 'results.json');
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static('public')); // 👈 THIS LINE SERVES index.html
 
 // Load or initialize results
 let results = {};
@@ -45,4 +45,5 @@ app.post('/submit', (req, res) => {
 app.get('/results', (req, res) => {
   res.json(results);
 });
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
